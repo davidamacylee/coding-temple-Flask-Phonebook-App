@@ -50,31 +50,31 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f'User {self.email} has been added to the database'
     
-class Contact(db.Model):
+class Entry(db.Model):
     id = db.Column(db.String, primary_key = True)
-    name = db.Column(db.String(150), nullable = False)
-    email = db.Column(db.String(200))
-    phone_number = db.Column(db.String(20))
-    address = db.Column(db.String(200))
+    name = db.Column(db.String(150), nullable = True)
+    date = db.Column(db.String(100), nullable = True)
+    cards = db.Column(db.String(200), nullable = True)
+    journal_entry = db.Column(db.String, nullable = True, default = 'No text entered')
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
-    def __init__(self, name, email, phone_number, address, user_token, id = ''):
+    def __init__(self, name, date, cards, journal_entry, user_token, id = ''):
         self.id = self.set_id()
         self.name = name
-        self.email = email
-        self.phone_number = phone_number
-        self.address = address
+        self.date = date
+        self.cards = cards
+        self.journal_entry = journal_entry
         self.user_token = user_token
 
     def __repr__(self):
-        return f'The following contact has been added to the phonebook: {self.name}'
+        return f'The following entry has been added to the journal: {self.date}'
     
     def set_id(self):
         return (secrets.token_urlsafe())
     
-class ContactSchema(ma.Schema):
+class EntrySchema(ma.Schema):
     class Meta:
-        fields = ['id', 'name', 'email', 'phone_number', 'address']
+        fields = ['id', 'name', 'date', 'cards', 'journal_entry']
 
-contact_schema = ContactSchema()
-contacts_schema = ContactSchema(many = True)
+entry_schema = EntrySchema()
+entries_schema = EntrySchema(many = True)
